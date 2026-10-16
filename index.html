@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narasimha Homes - AI House Plan Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .blur-plan { filter: blur(8px); user-select: none; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center font-bold text-slate-950 text-xl">NH</div>
+                <span class="text-xl font-bold tracking-tight text-white">Narasimha <span class="text-amber-500">Homes</span></span>
+            </div>
+            <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full font-medium">AI Architectural v2.4</span>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-white mb-2">Design Your Dream Home</h1>
+                <p class="text-slate-400 text-sm mb-6">Enter your plot dimensions & requirements to instantly generate an AI-optimized architectural floor plan.</p>
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Plot Width (ft)</label>
+                            <input type="number" id="plotWidth" value="40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Plot Length (ft)</label>
+                            <input type="number" id="plotLength" value="60" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Configuration</label>
+                        <select id="bhkType" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                            <option value="2BHK">2 BHK Compact Villa</option>
+                            <option value="3BHK" selected>3 BHK Luxury Family Home</option>
+                            <option value="4BHK">4 BHK Duplex Mansion</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Vastu Compliance</label>
+                        <select id="vastu" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-500">
+                            <option value="east">East Facing (Best)</option>
+                            <option value="north">North Facing</option>
+                            <option value="west">West Facing</option>
+                            <option value="south">South Facing</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="generatePlan()" class="mt-8 w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-4 rounded-xl transition duration-200 shadow-lg shadow-amber-500/10">
+                Generate AI Floor Plan
+            </button>
+        </div>
+
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col justify-between relative overflow-hidden">
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-white">Generated Blueprint Preview</h2>
+                    <span id="planStatus" class="text-xs px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">Locked (Step 1 Pending)</span>
+                </div>
+
+                <div id="planContainer" class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex items-center justify-center min-h-[350px] relative">
+                    <svg id="blueprintSvg" viewBox="0 0 500 400" class="w-full h-auto max-h-[350px] blur-plan transition-all duration-300">
+                        <rect width="500" height="400" fill="#090d16" stroke="#334155" stroke-width="4"/>
+                        <rect x="40" y="40" width="200" height="150" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="90" y="120" fill="#94a3b8" font-size="14">Master Bedroom</text>
+                        <rect x="240" y="40" width="220" height="150" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="300" y="120" fill="#94a3b8" font-size="14">Living & Dining</text>
+                        <rect x="40" y="190" width="150" height="170" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="80" y="280" fill="#94a3b8" font-size="14">Kitchen (SE)</text>
+                        <rect x="190" y="190" width="270" height="170" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                        <text x="270" y="280" fill="#94a3b8" font-size="14">Bedrooms / Baths</text>
+                    </svg>
+
+                    <div id="lockOverlay" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+                        <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-3 text-xl">🔒</div>
+                        <h3 class="text-white font-bold text-lg mb-1">Plan Generated Successfully!</h3>
+                        <p class="text-slate-400 text-xs max-w-xs mb-4">Pay 40% advance (₹199) to unlock clear dimensions, Vastu report & room layouts.</p>
+                        <button onclick="openPaymentModal(199, 'Step 1: 40% Advance for Plan Dimensions')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition">
+                            Unlock Plan (₹199)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step2Section" class="mt-6 pt-4 border-t border-slate-800 hidden">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Final High-Res Download & CAD Files</h4>
+                        <p class="text-xs text-slate-400">Pay remaining 60% (₹299) to download full PDF & 3D elevations.</p>
+                    </div>
+                    <button onclick="openPaymentModal(299, 'Step 2: 60% Final Balance for Downloads')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition">
+                        Pay Final 60% (₹299)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="paymentModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 relative shadow-2xl">
+            <button onclick="closePaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">&times;</button>
+            <h3 class="text-lg font-bold text-white mb-1">Secure Checkout</h3>
+            <p id="modalSubtext" class="text-xs text-slate-400 mb-6">Narasimha Homes Secure Payment Gateway</p>
+            
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl mb-6 text-center">
+                <span class="text-xs text-slate-400 block mb-1">Total Payable Amount</span>
+                <span id="modalAmount" class="text-3xl font-extrabold text-amber-400">₹199</span>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between cursor-pointer border-amber-500/50">
+                    <span class="text-sm font-medium text-white">UPI / Google Pay / PhonePe / QR</span>
+                    <span class="w-4 h-4 rounded-full border-2 border-amber-500 flex items-center justify-center"><span class="w-2 h-2 rounded-full bg-amber-500"></span></span>
+                </div>
+            </div>
+
+            <button onclick="simulateSuccessfulPayment()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3.5 rounded-xl transition shadow-lg">
+                Pay Now & Unlock
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        function generatePlan() {
+            alert('AI has successfully analyzed your plot size and generated the optimal floor plan layout!');
+        }
+        function openPaymentModal(amount, desc) {
+            document.getElementById('modalAmount').innerText = '₹' + amount;
+            document.getElementById('modalSubtext').innerText = desc;
+            document.getElementById('paymentModal').classList.remove('hidden');
+            document.getElementById('paymentModal').classList.add('flex');
+        }
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('flex');
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
+        function simulateSuccessfulPayment() {
+            closePaymentModal();
+            if(currentStep === 1) {
+                document.getElementById('blueprintSvg').classList.remove('blur-plan');
+                document.getElementById('lockOverlay').classList.add('hidden');
+                document.getElementById('planStatus').innerText = 'Unlocked (40% Paid)';
+                document.getElementById('planStatus').className = 'text-xs px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                document.getElementById('step2Section').classList.remove('hidden');
+                currentStep = 2;
+                alert('Payment Successful! 40% advance received. Plan dimensions and room layouts unlocked.');
+            } else {
+                document.getElementById('step2Section').innerHTML = '<div class="text-emerald-400 font-bold text-sm text-center py-2">🎉 Full Payment Received! Download Link: <a href="#" class="underline text-amber-400">Download High-Res PDF & CAD</a></div>';
+                alert('Full Payment Successful! Your complete blueprint and CAD files are now ready for download.');
+            }
+        }
+    </script>
+</body>
+      </html>
+                      
